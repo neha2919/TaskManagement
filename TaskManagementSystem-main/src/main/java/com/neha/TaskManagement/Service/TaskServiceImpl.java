@@ -136,6 +136,7 @@ public class TaskServiceImpl implements TaskService{
         //get the parent task
         Task parentTask = taskRepository.findById(parentTaskId)
                 .orElseThrow(()->new NotFoundException("Task does not exists."));
+        if(parentTask.getDueDate().isBefore(LocalDate.now())) throw new NotAllowedException("Current task due date has passed. Cannot create new sub-tasks.");
         //check if the subTasks is null || empty
         if (subTasks==null || subTasks.isEmpty()) throw new NullException("Sub-task was empty. No task was created.");
         if(parentTask.getSubTasks()==null) parentTask.setSubTasks(new ArrayList<>());
