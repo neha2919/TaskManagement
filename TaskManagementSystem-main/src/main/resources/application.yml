@@ -1,0 +1,28 @@
+
+spring:
+  application:
+    name: TaskManagement
+
+  datasource:
+    url: jdbc:postgresql://dpg-cv4lj6tds78s73e0bh00-a.oregon-postgres.render.com:5432/taskmanagement_db_soi3
+    username: taskmanagement_db_soi3_user
+    password: xTy9c3GFyC2G7pZ3kMi0y6njVz6mMYhb
+    driver-class-name: org.postgresql.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+
+
+app:
+  security:
+    key:
+      signingSecret: 1qaz:0okm:4rfv:7ujm:6tfc::123edc:8uhb
+      type: shared
+    jwt:
+      atExpirationMin: 360
+      rtExpirationMin: 4320
+      authType: Bearer
+      header: Authorization
+      issuer: https://neha-task-management.in
