@@ -101,7 +101,20 @@ public class TaskServiceImpl implements TaskService{
             if (taskDto.getPriority()!=null) existingTask.setPriority(taskDto.getPriority());
         }
         if (assignedUsers.contains(currentUser.getPrincipal())){
-            if (taskDto.getProgress()!=null) existingTask.setProgress(taskDto.getProgress());
+            if (taskDto.getProgress()!=null){
+                //if current task has a sub-task then check if its progress is COMPLETED, only if its COMPLETED, we allow the current task to be updated to COMPLETED
+                if (taskDto.getSubTasks()!=null && !taskDto.getSubTasks().isEmpty() && taskDto.getProgress()==Progress.COMPLETED){
+                    List<Progress> subTaskProgress = taskRepository.findAllById(taskDto.getSubTasks())
+                            .stream()
+                            .map(Task::getProgress)
+                            .toList();
+                    boolean isAllCompleted = subTaskProgress
+                            .stream()
+                            .allMatch(progress -> progress == Progress.COMPLETED);
+                    if (!isAllCompleted) throw new NotAllowedException("Current task cannot be completed until all sub tasks are completed.");
+                }
+                existingTask.setProgress(taskDto.getProgress());
+            }
         }
         else throw new UnauthorizedException("You are not authorized to update this task.");
 
